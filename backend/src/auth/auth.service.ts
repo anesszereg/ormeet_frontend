@@ -146,7 +146,7 @@ export class AuthService {
 
     user.emailVerified = true;
     user.emailVerifiedAt = new Date();
-    user.emailVerificationToken = undefined;
+    user.emailVerificationToken = null as any;
 
     await this.userRepository.save(user);
 
@@ -236,8 +236,8 @@ export class AuthService {
     const passwordHash = await bcrypt.hash(newPassword, salt);
 
     user.passwordHash = passwordHash;
-    user.passwordResetToken = undefined;
-    user.passwordResetExpires = undefined;
+    user.passwordResetToken = null as any;
+    user.passwordResetExpires = null as any;
 
     await this.userRepository.save(user);
 

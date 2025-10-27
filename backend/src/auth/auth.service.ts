@@ -60,7 +60,7 @@ export class AuthService {
     try {
       await this.emailService.sendWelcomeEmail(email, name, emailVerificationToken);
     } catch (error) {
-      console.error('Failed to send welcome email:', error);
+      console.error('⚠️ Failed to send welcome email, but user registration succeeded:', error.message);
       // Don't fail registration if email fails
     }
 
@@ -209,7 +209,7 @@ export class AuthService {
     try {
       await this.emailService.sendPasswordResetEmail(email, user.name, passwordResetToken);
     } catch (error) {
-      console.error('Failed to send password reset email:', error);
+      console.error('⚠️ Failed to send password reset email:', error.message);
     }
 
     return {
@@ -245,7 +245,7 @@ export class AuthService {
     try {
       await this.emailService.sendPasswordChangedEmail(user.email, user.name);
     } catch (error) {
-      console.error('Failed to send password changed email:', error);
+      console.error('⚠️ Failed to send password changed email:', error.message);
     }
 
     return {

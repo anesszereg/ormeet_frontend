@@ -175,7 +175,7 @@ export class EmailService {
       code: string;
       ticketType: string;
       price: number;
-      qrCodeUrl: string;
+      qrCodeBuffer: Buffer;
     }>;
     subtotal: number;
     discount: number;
@@ -183,9 +183,35 @@ export class EmailService {
     processingFee: number;
     total: number;
     currency: string;
+    pdfTicket?: Buffer;
   }) {
     try {
       this.logger.log(`📧 Sending order confirmation to: ${orderData.email}`);
+
+      // Prepare attachments for QR codes
+      const attachments = orderData.tickets.map((ticket, index) => ({
+        filename: `qr-${ticket.code}.png`,
+        content: ticket.qrCodeBuffer,
+        cid: `qr-${ticket.code}`, // Content ID for embedding in HTML
+      }));
+
+      // Add PDF ticket as attachment if provided
+      if (orderData.pdfTicket) {
+        attachments.push({
+          filename: `Tickets-${orderData.orderId}.pdf`,
+          content: orderData.pdfTicket,
+          contentType: 'application/pdf',
+        } as any);
+      }
+
+      // Prepare tickets with CID references for template
+      const ticketsForTemplate = orderData.tickets.map((ticket) => ({
+        id: ticket.id,
+        code: ticket.code,
+        ticketType: ticket.ticketType,
+        price: ticket.price,
+        qrCodeCid: `qr-${ticket.code}`, // CID reference
+      }));
 
       await this.mailerService.sendMail({
         to: orderData.email,
@@ -197,7 +223,7 @@ export class EmailService {
           eventTitle: orderData.eventTitle,
           eventDate: orderData.eventDate,
           eventLocation: orderData.eventLocation,
-          tickets: orderData.tickets,
+          tickets: ticketsForTemplate,
           ticketCount: orderData.tickets.length,
           subtotal: orderData.subtotal.toFixed(2),
           discount: orderData.discount.toFixed(2),
@@ -208,12 +234,55 @@ export class EmailService {
           appName: 'Ormeet',
           supportEmail: this.configService.get('SUPPORT_EMAIL') || 'support@ormeet.com',
         },
+        attachments,
       });
 
       this.logger.log(`✅ Order confirmation sent successfully to: ${orderData.email}`);
     } catch (error) {
       this.logger.error(`❌ Failed to send order confirmation to: ${orderData.email}`, error.stack);
       // Don't throw - we don't want to fail the order if email fails
+      console.error('Email error:', error);
+    }
+  }
+
+  async sendCheckInConfirmation(checkInData: {
+    email: string;
+    attendeeName: string;
+    eventTitle: string;
+    eventDate: string;
+    eventLocation: string;
+    ticketCode: string;
+    ticketType: string;
+    checkInTime: string;
+    checkInMethod: string;
+    seatInfo?: string;
+  }) {
+    try {
+      this.logger.log(`📧 Sending check-in confirmation to: ${checkInData.email}`);
+
+      await this.mailerService.sendMail({
+        to: checkInData.email,
+        subject: `✓ Check-In Confirmed - ${checkInData.eventTitle}`,
+        template: 'check-in-confirmation',
+        context: {
+          attendeeName: checkInData.attendeeName,
+          eventTitle: checkInData.eventTitle,
+          eventDate: checkInData.eventDate,
+          eventLocation: checkInData.eventLocation,
+          ticketCode: checkInData.ticketCode,
+          ticketType: checkInData.ticketType,
+          checkInTime: checkInData.checkInTime,
+          checkInMethod: checkInData.checkInMethod.toUpperCase(),
+          seatInfo: checkInData.seatInfo,
+          appName: 'Ormeet',
+          supportEmail: this.configService.get('SUPPORT_EMAIL') || 'support@ormeet.com',
+        },
+      });
+
+      this.logger.log(`✅ Check-in confirmation sent successfully to: ${checkInData.email}`);
+    } catch (error) {
+      this.logger.error(`❌ Failed to send check-in confirmation to: ${checkInData.email}`, error.stack);
+      // Don't throw - we don't want to fail the check-in if email fails
       console.error('Email error:', error);
     }
   }

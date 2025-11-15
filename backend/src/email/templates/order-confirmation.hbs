@@ -6,179 +6,257 @@
   <title>Order Confirmation</title>
   <style>
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      max-width: 600px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.8;
+      color: #2c3e50;
+      max-width: 650px;
       margin: 0 auto;
       padding: 20px;
-      background-color: #f4f4f4;
+      background-color: #f8f9fa;
     }
     .container {
       background-color: #ffffff;
-      border-radius: 8px;
-      padding: 30px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      border: 1px solid #e0e0e0;
+      padding: 0;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     }
     .header {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      padding: 40px 30px;
       text-align: center;
-      padding-bottom: 20px;
-      border-bottom: 2px solid #4CAF50;
+      border-bottom: 3px solid #FF4000;
+    }
+    .logo {
+      margin-bottom: 20px;
     }
     .header h1 {
-      color: #4CAF50;
+      color: #ffffff;
       margin: 0;
       font-size: 28px;
+      font-weight: 400;
+      letter-spacing: 1px;
     }
-    .success-icon {
-      font-size: 48px;
-      color: #4CAF50;
-      margin-bottom: 10px;
+    .success-badge {
+      display: inline-block;
+      background-color: #27ae60;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 14px;
+      margin-top: 15px;
+      font-family: Arial, sans-serif;
+    }
+    .content {
+      padding: 30px;
     }
     .order-info {
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 6px;
-      margin: 20px 0;
+      background-color: #fafafa;
+      border-left: 4px solid #FF4000;
+      padding: 20px 25px;
+      margin: 25px 0;
     }
     .order-info h2 {
       margin-top: 0;
-      color: #333;
+      color: #2c3e50;
       font-size: 20px;
+      font-weight: 400;
+      letter-spacing: 0.5px;
     }
     .info-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 0;
+      border-bottom: 1px dotted #d0d0d0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
     }
     .info-row:last-child {
       border-bottom: none;
     }
     .label {
       font-weight: 600;
-      color: #666;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
     }
     .value {
-      color: #333;
+      color: #2c3e50;
+      font-weight: 500;
     }
     .tickets-section {
-      margin: 30px 0;
+      margin: 35px 0;
+    }
+    .section-title {
+      color: #2c3e50;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ecf0f1;
+      letter-spacing: 0.5px;
     }
     .ticket-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
+      background: #ffffff;
+      border: 2px solid #e0e0e0;
+      color: #2c3e50;
+      padding: 25px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      position: relative;
+    }
+    .ticket-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 5px;
+      height: 100%;
+      background: linear-gradient(180deg, #FF4000 0%, #FE784B 100%);
     }
     .ticket-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       padding-bottom: 15px;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
+      border-bottom: 1px solid #e0e0e0;
     }
     .ticket-type {
       font-size: 18px;
-      font-weight: bold;
+      font-weight: 600;
+      color: #2c3e50;
+      font-family: Arial, sans-serif;
     }
     .ticket-price {
       font-size: 20px;
-      font-weight: bold;
+      font-weight: 700;
+      color: #FF4000;
+      font-family: Arial, sans-serif;
     }
     .ticket-code {
-      background-color: rgba(255,255,255,0.2);
-      padding: 10px;
-      border-radius: 4px;
+      background-color: #f8f9fa;
+      border: 1px dashed #bdc3c7;
+      padding: 12px;
       text-align: center;
-      margin: 10px 0;
+      margin: 15px 0;
       font-family: 'Courier New', monospace;
-      font-size: 16px;
-      letter-spacing: 2px;
+      font-size: 15px;
+      letter-spacing: 3px;
+      color: #2c3e50;
+      font-weight: 600;
     }
     .qr-code {
       text-align: center;
-      margin: 15px 0;
-      background-color: white;
-      padding: 15px;
-      border-radius: 8px;
+      margin: 20px 0;
+      background-color: #ffffff;
+      padding: 20px;
+      border: 2px solid #ecf0f1;
     }
     .qr-code img {
-      max-width: 200px;
+      max-width: 180px;
       height: auto;
+      border: 1px solid #e0e0e0;
+      padding: 10px;
+      background: white;
     }
     .ticket-instructions {
       font-size: 12px;
-      opacity: 0.9;
-      margin-top: 10px;
+      margin-top: 15px;
       text-align: center;
+      color: #7f8c8d;
+      font-family: Arial, sans-serif;
+      font-style: italic;
     }
     .pricing-table {
-      margin: 20px 0;
-      background-color: #f9f9f9;
-      padding: 20px;
-      border-radius: 6px;
+      margin: 25px 0;
+      background-color: #fafafa;
+      border: 1px solid #e0e0e0;
+      padding: 25px;
+    }
+    .pricing-table h3 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 20px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
     }
     .pricing-row {
       display: flex;
       justify-content: space-between;
-      padding: 8px 0;
+      padding: 12px 0;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      color: #34495e;
+      border-bottom: 1px dotted #d0d0d0;
+    }
+    .pricing-row:last-child {
+      border-bottom: none;
     }
     .pricing-row.total {
-      border-top: 2px solid #333;
-      margin-top: 10px;
-      padding-top: 10px;
-      font-weight: bold;
-      font-size: 18px;
-      color: #4CAF50;
+      border-top: 2px solid #2c3e50;
+      border-bottom: none;
+      margin-top: 15px;
+      padding-top: 15px;
+      font-weight: 700;
+      font-size: 19px;
+      color: #27ae60;
     }
     .event-details {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 20px 0;
+      background: #fafafa;
+      border: 2px solid #ecf0f1;
+      border-left: 5px solid #FF4000;
+      color: #2c3e50;
+      padding: 25px;
+      margin: 25px 0;
     }
     .event-details h3 {
       margin-top: 0;
       font-size: 22px;
+      font-weight: 400;
+      color: #2c3e50;
+      letter-spacing: 0.5px;
     }
     .event-detail-row {
-      margin: 10px 0;
-      display: flex;
-      align-items: center;
-    }
-    .event-detail-row svg {
-      margin-right: 10px;
-      flex-shrink: 0;
+      margin: 12px 0;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      color: #34495e;
+      line-height: 1.6;
     }
     .footer {
+      background-color: #f8f9fa;
       text-align: center;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e0e0e0;
-      color: #666;
-      font-size: 14px;
+      padding: 30px;
+      border-top: 3px solid #FF4000;
+      color: #7f8c8d;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
     }
-    .button {
-      display: inline-block;
-      background-color: #4CAF50;
-      color: white;
-      padding: 12px 30px;
+    .footer a {
+      color: #FF4000;
       text-decoration: none;
-      border-radius: 5px;
-      margin: 20px 0;
-      font-weight: bold;
+      font-weight: 600;
     }
     .warning-box {
-      background-color: #fff3cd;
-      border-left: 4px solid #ffc107;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 4px;
+      background-color: #fff9e6;
+      border: 1px solid #ffe08a;
+      border-left: 4px solid #f39c12;
+      padding: 20px;
+      margin: 25px 0;
+      font-family: Arial, sans-serif;
+    }
+    .warning-box strong {
+      color: #d68910;
+      font-size: 15px;
+    }
+    .warning-box ul {
+      margin: 10px 0;
+      padding-left: 25px;
+      color: #7f8c8d;
+      font-size: 14px;
+      line-height: 1.8;
     }
   </style>
 </head>
@@ -186,13 +264,35 @@
   <div class="container">
     <!-- Header -->
     <div class="header">
-      <div class="success-icon">✓</div>
-      <h1>Order Confirmed!</h1>
-      <p>Thank you for your purchase, {{customerName}}!</p>
+      <div class="logo">
+        <svg width="56" height="76" viewBox="0 0 28 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25.4835 3.2568C25.7636 3.32823 25.9104 3.6233 25.7979 3.88959C25.2396 5.21111 23.5021 8.82814 20.7305 10.151C18.1088 11.4024 14.4737 10.7095 13.1665 10.3949C12.8926 10.329 12.7425 10.0481 12.8391 9.78343C13.3089 8.49569 14.7854 4.97963 17.3342 3.56463C20.028 2.06919 24.0691 2.8961 25.4835 3.2568Z" fill="#FF4000"/>
+          <path d="M13.6018 13.4994C13.6018 13.4994 14.2592 11.4916 10.4038 8.98797C8.18627 7.54793 6.41091 7.57018 6.41091 7.57018" stroke="#FF4000" stroke-width="1.42267" stroke-linecap="round"/>
+          <path d="M11.9859 13.0219C11.9859 13.0219 12.1874 11.9658 12.4968 11.3583C12.7904 10.7817 13.4766 10.0293 13.4766 10.0293" stroke="#FF4000" stroke-width="1.42267" stroke-linecap="round"/>
+          <path d="M13.5527 10.8965C21.0379 10.8965 27.1064 16.9643 27.1064 24.4492C27.1064 31.934 21.0378 38.002 13.5527 38.002C6.06779 38.0018 9.32922e-05 31.9339 0 24.4492C0 16.9645 6.06773 10.8967 13.5527 10.8965ZM13.5527 14.751C8.19654 14.7512 3.85449 19.0932 3.85449 24.4492C3.85459 29.8052 8.1966 34.1473 13.5527 34.1475C18.909 34.1475 23.2519 29.8053 23.252 24.4492C23.252 19.0931 18.9091 14.751 13.5527 14.751Z" fill="url(#paint0_linear_2573_5165)"/>
+          <defs>
+            <linearGradient id="paint0_linear_2573_5165" x1="0.581431" y1="12.4085" x2="24.7052" y2="31.2751" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#FF4000"/>
+              <stop offset="1" stop-color="#FE784B"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h1>Order Confirmation</h1>
+      <div class="success-badge">✓ Payment Successful</div>
     </div>
 
-    <!-- Order Information -->
-    <div class="order-info">
+    <div class="content">
+      <!-- Customer Greeting -->
+      <p style="font-size: 16px; color: #2c3e50; margin-bottom: 25px;">
+        Dear <strong>{{customerName}}</strong>,
+      </p>
+      <p style="font-size: 15px; color: #7f8c8d; line-height: 1.8;">
+        Thank you for your purchase. Your order has been confirmed and your tickets are ready. Please find your ticket details below.
+      </p>
+
+      <!-- Order Information -->
+      <div class="order-info">
       <h2>Order Details</h2>
       <div class="info-row">
         <span class="label">Order ID:</span>
@@ -217,8 +317,10 @@
 
     <!-- Tickets Section -->
     <div class="tickets-section">
-      <h2>🎫 Your Tickets</h2>
-      <p>Present these QR codes at the event entrance:</p>
+      <h2 class="section-title">Your Event Tickets</h2>
+      <p style="font-size: 14px; color: #7f8c8d; margin-bottom: 20px; font-family: Arial, sans-serif;">
+        Please present the QR code(s) below at the event entrance for admission.
+      </p>
       
       {{#each tickets}}
       <div class="ticket-card">
@@ -232,7 +334,7 @@
         </div>
         
         <div class="qr-code">
-          <img src="{{this.qrCodeUrl}}" alt="QR Code for ticket {{this.code}}" />
+          <img src="cid:{{this.qrCodeCid}}" alt="QR Code for ticket {{this.code}}" />
         </div>
         
         <div class="ticket-instructions">
@@ -280,11 +382,18 @@
       </ul>
     </div>
 
+    </div>
+
     <!-- Footer -->
     <div class="footer">
-      <p>Need help? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a></p>
-      <p style="color: #999; font-size: 12px; margin-top: 20px;">
-        This is an automated email from {{appName}}. Please do not reply to this email.
+      <p style="margin-bottom: 15px;">
+        For assistance, please contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a>
+      </p>
+      <p style="font-size: 12px; margin-top: 15px; color: #95a5a6;">
+        This is an automated message from {{appName}}. Please do not reply to this email.
+      </p>
+      <p style="font-size: 11px; margin-top: 10px; color: #bdc3c7;">
+        © 2025 {{appName}}. All rights reserved.
       </p>
     </div>
   </div>

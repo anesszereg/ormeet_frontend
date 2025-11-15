@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check-In Confirmation</title>
+  <style>
+    body {
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.8;
+      color: #2c3e50;
+      max-width: 650px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+    }
+    .container {
+      background-color: #ffffff;
+      border: 2px solid #d4af37;
+      padding: 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e8449 0%, #27ae60 100%);
+      padding: 45px 35px;
+      text-align: center;
+      border-bottom: 4px solid #d4af37;
+      position: relative;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d4af37 0%, #f39c12 50%, #d4af37 100%);
+    }
+    .logo {
+      margin-bottom: 25px;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+    }
+    .header h1 {
+      color: #ffffff;
+      margin: 0;
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: 2px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .success-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      color: #1e8449;
+      padding: 10px 28px;
+      border-radius: 25px;
+      font-size: 15px;
+      margin-top: 18px;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      border: 2px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      letter-spacing: 0.5px;
+    }
+    .content {
+      padding: 40px 35px;
+    }
+    .welcome-message {
+      background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+      border: 3px solid #66bb6a;
+      padding: 35px 30px;
+      margin: 0 0 35px 0;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.15);
+      position: relative;
+    }
+    .welcome-message::before {
+      content: '✓';
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      font-weight: bold;
+      border: 4px solid white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .welcome-message h2 {
+      color: #1e8449;
+      font-size: 28px;
+      margin: 15px 0 10px 0;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+    .welcome-message p {
+      color: #2c3e50;
+      font-size: 16px;
+      margin: 8px 0;
+      font-family: Arial, sans-serif;
+    }
+    .welcome-message .check-in-time {
+      background: rgba(255,255,255,0.8);
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: inline-block;
+      border: 1px solid rgba(39, 174, 96, 0.3);
+    }
+    .event-details {
+      background: linear-gradient(135deg, #fff8f0 0%, #ffe8d6 100%);
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      padding: 30px;
+      margin: 30px 0;
+      box-shadow: 0 4px 12px rgba(212, 175, 55, 0.15);
+    }
+    .event-details h3 {
+      margin-top: 0;
+      font-size: 24px;
+      font-weight: 300;
+      color: #2c3e50;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #d4af37;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+    .event-detail-row {
+      margin: 16px 0;
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      color: #34495e;
+      line-height: 1.8;
+      padding-left: 30px;
+      position: relative;
+    }
+    .event-detail-row::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #d4af37 0%, #f39c12 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .check-in-info {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 30px;
+      margin: 30px 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .check-in-info h2 {
+      margin-top: 0;
+      color: #2c3e50;
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: 1px;
+      border-bottom: 2px solid #27ae60;
+      padding-bottom: 12px;
+      margin-bottom: 25px;
+    }
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 16px 20px;
+      margin: 8px 0;
+      background: white;
+      border-radius: 6px;
+      border: 1px solid #e8ecf1;
+      font-family: Arial, sans-serif;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    .info-row:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border-color: #27ae60;
+    }
+    .label {
+      font-weight: 700;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+    .value {
+      color: #2c3e50;
+      font-weight: 600;
+      font-size: 15px;
+    }
+    .info-box {
+      background: linear-gradient(135deg, #fff9e6 0%, #fff3d6 100%);
+      border: 2px solid #f39c12;
+      border-radius: 10px;
+      padding: 25px 30px;
+      margin: 30px 0;
+      font-family: Arial, sans-serif;
+      box-shadow: 0 4px 12px rgba(243, 156, 18, 0.15);
+    }
+    .info-box strong {
+      color: #d68910;
+      font-size: 16px;
+      display: block;
+      margin-bottom: 15px;
+      letter-spacing: 0.5px;
+    }
+    .info-box ul {
+      margin: 10px 0;
+      padding-left: 25px;
+      color: #5d6d7e;
+      font-size: 14px;
+      line-height: 2;
+    }
+    .info-box li {
+      margin: 8px 0;
+    }
+    .divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, #d4af37 50%, transparent 100%);
+      margin: 35px 0;
+    }
+    .footer {
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+      text-align: center;
+      padding: 35px 30px;
+      border-top: 4px solid #d4af37;
+      color: #ecf0f1;
+      font-size: 13px;
+      font-family: Arial, sans-serif;
+    }
+    .footer a {
+      color: #f39c12;
+      text-decoration: none;
+      font-weight: 700;
+      transition: color 0.3s ease;
+    }
+    .footer a:hover {
+      color: #d4af37;
+    }
+    .footer p {
+      margin: 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <svg width="56" height="76" viewBox="0 0 28 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M25.4835 3.2568C25.7636 3.32823 25.9104 3.6233 25.7979 3.88959C25.2396 5.21111 23.5021 8.82814 20.7305 10.151C18.1088 11.4024 14.4737 10.7095 13.1665 10.3949C12.8926 10.329 12.7425 10.0481 12.8391 9.78343C13.3089 8.49569 14.7854 4.97963 17.3342 3.56463C20.028 2.06919 24.0691 2.8961 25.4835 3.2568Z" fill="#ffffff"/>
+          <path d="M13.6018 13.4994C13.6018 13.4994 14.2592 11.4916 10.4038 8.98797C8.18627 7.54793 6.41091 7.57018 6.41091 7.57018" stroke="#ffffff" stroke-width="1.42267" stroke-linecap="round"/>
+          <path d="M11.9859 13.0219C11.9859 13.0219 12.1874 11.9658 12.4968 11.3583C12.7904 10.7817 13.4766 10.0293 13.4766 10.0293" stroke="#ffffff" stroke-width="1.42267" stroke-linecap="round"/>
+          <path d="M13.5527 10.8965C21.0379 10.8965 27.1064 16.9643 27.1064 24.4492C27.1064 31.934 21.0378 38.002 13.5527 38.002C6.06779 38.0018 9.32922e-05 31.9339 0 24.4492C0 16.9645 6.06773 10.8967 13.5527 10.8965ZM13.5527 14.751C8.19654 14.7512 3.85449 19.0932 3.85449 24.4492C3.85459 29.8052 8.1966 34.1473 13.5527 34.1475C18.909 34.1475 23.2519 29.8053 23.252 24.4492C23.252 19.0931 18.9091 14.751 13.5527 14.751Z" fill="url(#paint0_linear_2573_5165)"/>
+          <defs>
+            <linearGradient id="paint0_linear_2573_5165" x1="0.581431" y1="12.4085" x2="24.7052" y2="31.2751" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#ffffff"/>
+              <stop offset="1" stop-color="#e0e0e0"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+      <h1>Check-In Confirmed!</h1>
+      <div class="success-badge">✓ You're All Set</div>
+    </div>
+
+    <div class="content">
+      <!-- Welcome Message -->
+      <div class="welcome-message">
+        <h2>Welcome, {{attendeeName}}!</h2>
+        <p style="font-size: 17px; font-weight: 500;">You have successfully checked in to the event</p>
+        <div class="check-in-time">
+          <span style="font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px;">Checked in at</span><br>
+          <strong style="font-size: 15px; color: #1e8449;">{{checkInTime}}</strong>
+        </div>
+      </div>
+
+      <!-- Event Details -->
+      <div class="event-details">
+        <h3>{{eventTitle}}</h3>
+        <div class="event-detail-row">
+          <span style="font-size: 18px; margin-right: 8px;">📅</span>
+          <span>{{eventDate}}</span>
+        </div>
+        <div class="event-detail-row">
+          <span style="font-size: 18px; margin-right: 8px;">📍</span>
+          <span>{{eventLocation}}</span>
+        </div>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <!-- Check-In Information -->
+      <div class="check-in-info">
+        <h2>Check-In Details</h2>
+        <div class="info-row">
+          <span class="label">Ticket Code</span>
+          <span class="value">{{ticketCode}}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Ticket Type</span>
+          <span class="value">{{ticketType}}</span>
+        </div>
+        <div class="info-row">
+          <span class="label">Check-In Method</span>
+          <span class="value">{{checkInMethod}}</span>
+        </div>
+        {{#if seatInfo}}
+        <div class="info-row">
+          <span class="label">Seat Assignment</span>
+          <span class="value">{{seatInfo}}</span>
+        </div>
+        {{/if}}
+      </div>
+
+      <!-- Important Information -->
+      <div class="info-box">
+        <strong>📌 Important Information</strong>
+        <ul>
+          <li>You are now checked in and can access the event venue</li>
+          <li>Please keep this confirmation email for your records</li>
+          <li>If you need to exit and re-enter, contact event staff</li>
+          <li>Present this email or your ticket if requested by staff</li>
+          <li>Have a wonderful time at the event!</li>
+        </ul>
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <p style="font-size: 16px; color: #2c3e50; line-height: 1.8; text-align: center; margin: 30px 0; font-family: Georgia, serif;">
+        We hope you enjoy <strong style="color: #1e8449;">{{eventTitle}}</strong>!
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p style="margin-bottom: 15px;">
+        Questions? Contact us at <a href="mailto:{{supportEmail}}">{{supportEmail}}</a>
+      </p>
+      <p style="font-size: 12px; margin-top: 15px; color: #95a5a6;">
+        This is an automated message from {{appName}}. Please do not reply to this email.
+      </p>
+      <p style="font-size: 11px; margin-top: 10px; color: #bdc3c7;">
+        © 2025 {{appName}}. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

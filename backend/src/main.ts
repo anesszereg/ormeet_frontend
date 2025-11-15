@@ -74,7 +74,7 @@ Comprehensive event management platform with advanced features:
     .addTag('Ticket Types', '🎟️ Ticket variations, pricing tiers, and availability')
     .addTag('Tickets', '🎫 Individual ticket management, QR codes, and transfers')
     .addTag('Orders', '💳 Order processing, payment tracking, and refunds')
-    .addTag('Attendance', '📋 Event check-in/out with QR, NFC, and manual methods')
+    .addTag('Attendance', '📋 QR code check-in, ticket validation, attendance tracking, and real-time stats')
     .addTag('Reviews', '⭐ Event reviews, ratings, and moderation')
     .addTag('Promotions', '🎁 Discount codes, promotional campaigns, and validation')
     .addServer('http://localhost:3000', 'Local Development Server')

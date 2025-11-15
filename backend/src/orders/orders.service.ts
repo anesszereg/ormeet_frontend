@@ -9,6 +9,7 @@ import { Repository } from 'typeorm';
 import { Order, OrderStatus, TicketType, Promotion, PromotionType, Ticket, Event } from '../entities';
 import { CreateOrderDto, UpdateOrderDto, CreateOrderEnhancedDto } from './dto';
 import { EmailService } from '../email/email.service';
+import { PdfTicketService } from './pdf-ticket.service';
 import * as QRCode from 'qrcode';
 
 @Injectable()
@@ -25,6 +26,7 @@ export class OrdersService {
     @InjectRepository(Event)
     private readonly eventRepository: Repository<Event>,
     private readonly emailService: EmailService,
+    private readonly pdfTicketService: PdfTicketService,
   ) {}
 
   async create(createOrderDto: CreateOrderDto): Promise<Order> {
@@ -307,7 +309,7 @@ export class OrdersService {
       code: string;
       ticketType: string;
       price: number;
-      qrCodeUrl: string;
+      qrCodeBuffer: Buffer;
     }> = [];
     
     for (const item of savedOrder.items) {
@@ -337,15 +339,15 @@ export class OrdersService {
 
         const savedTicket = await this.ticketRepository.save(ticket);
         
-        // Generate QR code
-        const qrCodeUrl = await this.generateQRCode(ticketCode);
+        // Generate QR code buffer
+        const qrCodeBuffer = await this.generateQRCode(ticketCode);
         
         generatedTickets.push({
           id: savedTicket.id,
           code: ticketCode,
           ticketType: ticketType?.title || 'Ticket',
           price: item.unitPrice,
-          qrCodeUrl,
+          qrCodeBuffer,
         });
       }
     }
@@ -356,25 +358,51 @@ export class OrdersService {
       relations: ['venue'],
     });
 
-    // Send confirmation email
+    // Generate PDF and send confirmation email
     if (event) {
       const eventLocation = event.venue 
         ? `${event.venue.name}, ${event.venue.city}`
         : event.customLocation?.city || 'TBA';
 
+      const eventDate = event.startAt.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+
+      // Prepare tickets data for PDF (without buffer)
+      const ticketsForPdf = generatedTickets.map(t => ({
+        code: t.code,
+        ticketType: t.ticketType,
+        price: t.price,
+      }));
+
+      // Generate PDF with tickets
+      const pdfBuffer = await this.pdfTicketService.generateTicketsPDF({
+        orderId: order.id,
+        customerName: order.billingName,
+        eventTitle: event.title,
+        eventDate,
+        eventLocation,
+        tickets: ticketsForPdf,
+        subtotal: Number(order.amountSubtotal),
+        discount: Number(order.discountAmount),
+        serviceFee: Number(order.serviceFee),
+        processingFee: Number(order.processingFee),
+        total: Number(order.amountTotal),
+        currency: order.currency,
+      });
+
+      // Send email with PDF and embedded QR codes
       await this.emailService.sendOrderConfirmation({
         email: order.billingEmail,
         customerName: order.billingName,
         orderId: order.id,
         eventTitle: event.title,
-        eventDate: event.startAt.toLocaleDateString('en-US', {
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-        }),
+        eventDate,
         eventLocation,
         tickets: generatedTickets,
         subtotal: Number(order.amountSubtotal),
@@ -383,6 +411,7 @@ export class OrdersService {
         processingFee: Number(order.processingFee),
         total: Number(order.amountTotal),
         currency: order.currency,
+        pdfTicket: pdfBuffer,
       });
     }
 
@@ -399,23 +428,24 @@ export class OrdersService {
     return code;
   }
 
-  // Generate QR code as data URL
-  private async generateQRCode(data: string): Promise<string> {
+  // Generate QR code as buffer for email attachment
+  private async generateQRCode(data: string): Promise<Buffer> {
     try {
-      // Generate QR code as data URL
-      const qrCodeDataUrl = await QRCode.toDataURL(data, {
+      // Generate QR code as buffer
+      const qrCodeBuffer = await QRCode.toBuffer(data, {
         width: 300,
         margin: 2,
         color: {
           dark: '#000000',
           light: '#FFFFFF',
         },
+        type: 'png',
       });
-      return qrCodeDataUrl;
+      return qrCodeBuffer;
     } catch (error) {
       console.error('QR Code generation error:', error);
-      // Return a placeholder if QR generation fails
-      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
+      // Return a minimal 1x1 transparent PNG as fallback
+      return Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64');
     }
   }
 

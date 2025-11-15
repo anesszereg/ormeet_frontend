@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrdersService } from './orders.service';
 import { OrdersController } from './orders.controller';
+import { PdfTicketService } from './pdf-ticket.service';
 import { Order, TicketType, Promotion, Ticket, Event } from '../entities';
 import { EmailModule } from '../email/email.module';
 
@@ -11,7 +12,7 @@ import { EmailModule } from '../email/email.module';
     EmailModule,
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService, PdfTicketService],
   exports: [OrdersService],
 })
 export class OrdersModule {}

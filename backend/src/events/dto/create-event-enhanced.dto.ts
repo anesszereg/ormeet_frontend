@@ -16,7 +16,7 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { EventStatus, EventDateType, RecurringPattern, LocationType } from '../../entities';
-import { CreateTicketDto } from './create-ticket.dto';
+import { CreateEventTicketTypeDto } from './create-event-ticket-type.dto';
 
 // Sub-DTOs for nested objects
 export class CustomLocationDto {
@@ -286,7 +286,7 @@ export class CreateEventEnhancedDto {
 
   // Tickets
   @ApiPropertyOptional({ 
-    type: [CreateTicketDto],
+    type: [CreateEventTicketTypeDto],
     description: 'Create tickets along with the event',
     example: [
       {
@@ -310,6 +310,6 @@ export class CreateEventEnhancedDto {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => CreateTicketDto)
-  tickets?: CreateTicketDto[];
+  @Type(() => CreateEventTicketTypeDto)
+  tickets?: CreateEventTicketTypeDto[];
 }

@@ -12,7 +12,7 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { TicketTypeEnum } from '../../entities';
 
-export class CreateTicketDto {
+export class CreateEventTicketTypeDto {
   @ApiProperty({ example: 'VIP Pass' })
   @IsString()
   name: string;

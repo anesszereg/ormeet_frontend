@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
-@theme{
+/* Ormeet Frontend - Global Styles */
 
-    /*  font family */
-    
+@theme {
+  /* Font Family */
   --font-poppins: 'Poppins', sans-serif;
-  
-  /* Font Import */
   --font-family-base: 'Poppins', sans-serif;
 
+  /* Font Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semi-bold: 600;
   --font-weight-bold: 700;
 
+  /* Font Sizes */
   --font-size-heading-l: 41px;
   --font-size-heading-m: 20px;
   --font-size-heading-s: 16px;
@@ -25,16 +25,13 @@
   --font-size-button-large: 16px;
   --font-size-button-small: 14px;
 
-
-
-    /* colors */
-
-  --color-primary: #FF4000;
+  /* Colors */
+  --color-primary: #E0234E;
   --color-primary-dark: #F0450B;
   --color-primary-extra-dark: #E33900;
   --color-primary-light: #FFF4F3;
   
-  --color-secondary: #000000;
+  --color-secondary: #3178C6;
   --color-secondary-light: #F8F8F8;
 
   --color-black: #000000;
@@ -64,4 +61,31 @@
   --color-status-light-blue: #EAF3FF;
 }
 
-  
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-progress {
+  animation: progress 3s linear;
+}

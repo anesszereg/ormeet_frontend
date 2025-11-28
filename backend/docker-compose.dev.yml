@@ -46,7 +46,6 @@ services:
     volumes:
       - ./src:/app/src
       - ./test:/app/test
-      - /app/node_modules
     depends_on:
       postgres:
         condition: service_healthy

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { useAuth } from '../context/AuthContext';
 import Logo from '../assets/Svgs/Logo.svg';
 import LoginImage from '../assets/imges/login.jpg';
 
@@ -33,6 +33,8 @@ const Register = () => {
     });
   };
 
+  const { register } = useAuth();
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -47,28 +49,30 @@ const Register = () => {
       return;
     }
 
+    if (formData.password.length < 6) {
+      setError('Password must be at least 6 characters long');
+      return;
+    }
+
     setIsLoading(true);
 
-    // Show success popup immediately for front-end testing
-    setShowSuccess(true);
-    setIsLoading(false);
-    
-    // TODO: Uncomment this when backend is ready
-    /*
     try {
-      await authService.register({
+      await register({
         name: `${formData.firstName} ${formData.familyName}`,
         email: formData.email,
+        phone: formData.phone || undefined,
         password: formData.password,
+        roles: ['attendee'],
       });
       
       setShowSuccess(true);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const errorMessage = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
+      setError(errorMessage);
+      console.error('Registration error:', err);
     } finally {
       setIsLoading(false);
     }
-    */
   };
 
   const handleGoogleSignup = () => {

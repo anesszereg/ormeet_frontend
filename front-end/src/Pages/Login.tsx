@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Logo from '../assets/Svgs/Logo.svg';
 import LoginImage from '../assets/imges/login.jpg';
 
@@ -22,6 +22,10 @@ const Login = () => {
     }
   };
 
+  const { login } = useAuth();
+  const location = useLocation();
+  const from = (location.state as any)?.from?.pathname || '/';
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -30,11 +34,14 @@ const Login = () => {
     try {
       const credentials = loginMethod === 'email' 
         ? { email, password } 
-        : { email: phone, password }; // Use phone as email for now
-      await authService.login(credentials);
-      navigate('/');
+        : { phone, password };
+      
+      await login(credentials);
+      navigate(from, { replace: true });
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please try again.');
+      const errorMessage = err.response?.data?.message || err.message || 'Login failed. Please try again.';
+      setError(errorMessage);
+      console.error('Login error:', err);
     } finally {
       setIsLoading(false);
     }

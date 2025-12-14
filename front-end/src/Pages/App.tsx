@@ -1,5 +1,19 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { Login, Register, ForgotPassword, OnboardingChoice, OnboardingOrganizer, OnboardingSignup, EmailConfirmation, OnboardingBrandInfo, OnboardingInterests, DashboardAttendee, SearchResult, EventDetailsSearchResults } from '../pages';
+import ProtectedRoute from '../components/ProtectedRoute';
+import Login from './Login';
+import Register from './Register';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
+import VerifyEmail from './VerifyEmail';
+import OnboardingChoice from './OnboardingChoice';
+import OnboardingOrganizer from './OnboardingOrganizer';
+import OnboardingSignup from './OnboardingSignup';
+import EmailConfirmation from './EmailConfirmation';
+import OnboardingBrandInfo from './OnboardingBrandInfo';
+import OnboardingInterests from './OnboardingInterests';
+import DashboardAttendee from './dashboard/DashboardAttendee';
+import SearchResult from './SearchResult';
+import EventDetailsSearchResults from './EventDetailsSearchResults';
 
 const App = () => {
   return (
@@ -11,21 +25,30 @@ const App = () => {
         {/* Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
+        
+        {/* Onboarding Routes */}
         <Route path="/onboarding-choice" element={<OnboardingChoice />} />
         <Route path="/onboarding-organizer" element={<OnboardingOrganizer />} />
         <Route path="/onboarding-signup" element={<OnboardingSignup />} />
         <Route path="/email-confirmation" element={<EmailConfirmation />} />
         <Route path="/onboarding-brand-info" element={<OnboardingBrandInfo />} />
         <Route path="/onboarding-interests" element={<OnboardingInterests />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
         
-        {/* Dashboard Routes */}
-        <Route path="/dashboard-attendee" element={<DashboardAttendee />} />
+        {/* Protected Dashboard Routes */}
+        <Route 
+          path="/dashboard-attendee" 
+          element={
+            <ProtectedRoute>
+              <DashboardAttendee />
+            </ProtectedRoute>
+          } 
+        />
         
-        {/* Search Results */}
+        {/* Public Search Routes */}
         <Route path="/search-results" element={<SearchResult />} />
-        
-        {/* Event Details */}
         <Route path="/event/:eventId" element={<EventDetailsSearchResults />} />
         
         {/* TODO: Add other routes */}

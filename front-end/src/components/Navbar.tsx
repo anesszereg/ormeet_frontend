@@ -1,9 +1,13 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import Logo from '../assets/Svgs/navbar/Logo.svg';
 import LangueIcon from '../assets/Svgs/navbar/langue.svg';
 import ProfilePhoto from '../assets/imges/photoProfil.jpg';
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('EN');
@@ -28,6 +32,12 @@ const Navbar = () => {
   const handleLanguageSelect = (language: string) => {
     setSelectedLanguage(language);
     setIsLanguageMenuOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsProfileMenuOpen(false);
+    navigate('/login');
   };
 
   return (
@@ -103,7 +113,22 @@ const Navbar = () => {
 
           {/* Profile Dropdown menu */}
           {isProfileMenuOpen && (
-            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-[#EEEEEE] py-1 z-50">
+            <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-[#EEEEEE] py-2 z-50">
+              {/* User Info Section */}
+              {user && (
+                <div className="px-4 py-3 border-b border-[#EEEEEE]">
+                  <p className="text-sm font-semibold text-black truncate">{user.name}</p>
+                  <p className="text-xs text-[#757575] truncate">{user.email}</p>
+                  {user.emailVerified && (
+                    <span className="inline-flex items-center gap-1 mt-1 text-xs text-[#34A853]">
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                        <path d="M3 6l2 2 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                      Verified
+                    </span>
+                  )}
+                </div>
+              )}
               <a
                 href="/profile"
                 className="block px-4 py-2.5 text-sm text-[#4F4F4F] hover:bg-[#F8F8F8] hover:text-[#FF4000] transition-colors"
@@ -130,10 +155,7 @@ const Navbar = () => {
               </a>
               <div className="border-t border-[#EEEEEE] my-1"></div>
               <button
-                onClick={() => {
-                  // Add logout logic here
-                  console.log('Logging out...');
-                }}
+                onClick={handleLogout}
                 className="w-full text-left px-4 py-2.5 text-sm text-[#FF4000] hover:bg-[#FFF4F3] transition-colors font-medium"
               >
                 Log out

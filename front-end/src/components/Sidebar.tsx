@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import MasquerSidebar from '../assets/Svgs/sidbar/masquerSidbar.svg';
-import AfficheSidebar from '../assets/Svgs/sidbar/afficheSidebar.svg';
 import MyTicketIcon from '../assets/Svgs/sidbar/Myticket.svg';
 import FavouriteIcon from '../assets/Svgs/sidbar/favourite.svg';
 import FollowingIcon from '../assets/Svgs/sidbar/following.svg';
 import SettingsIcon from '../assets/Svgs/sidbar/settings.svg';
 import RechercheIcon from '../assets/Svgs/sidbar/recherche.svg';
+import { BsFillArrowLeftCircleFill } from "react-icons/bs";
+import { BsFillArrowRightCircleFill } from "react-icons/bs";
 
 interface SidebarProps {
   activeTab?: string;
@@ -15,7 +15,7 @@ interface SidebarProps {
 
 const Sidebar = ({ activeTab = 'my-tickets', onTabChange, onCollapseChange }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
+
   const handleToggleCollapse = () => {
     const newCollapsedState = !isCollapsed;
     setIsCollapsed(newCollapsedState);
@@ -34,31 +34,34 @@ const Sidebar = ({ activeTab = 'my-tickets', onTabChange, onCollapseChange }: Si
     // Background: light gray (#F8F8F8), minimum height to maintain consistent size
     // Smooth transition for width changes
     <aside
-      className={`${
-        isCollapsed ? 'w-20' : 'w-60'
-      } min-h-full bg-[#F8F8F8] flex flex-col transition-all duration-300 ease-in-out`}
+      className={`${isCollapsed ? 'w-20' : 'w-60'
+        } min-h-full bg-[#F8F8F8] flex flex-col transition-all duration-300 ease-in-out`}
     >
       {/* Header section: "Your Dashboard" title + toggle button */}
       {/* Height: 64px to match navbar, padding for alignment and border spacing */}
-      <div className="h-16 px-4 flex items-center justify-between border-b border-[#EEEEEE] mx-3">
+      <div className="h-16 pl-6 flex items-center justify-between border-b border-[#EEEEEE] ">
         {/* Container for perfect vertical alignment */}
         <div className="flex items-center justify-between w-full">
           {/* Title: only visible when sidebar is expanded */}
           {!isCollapsed && (
             <h2 className="text-base font-semibold text-black">Your Dashboard</h2>
           )}
-          
+
           {/* Toggle button: switches between collapse/expand states */}
-          {/* Button size: 48x48px with circular background and shadow */}
+          {/* Button: circular with hover effect */}
           <button
             onClick={handleToggleCollapse}
-            className="shrink-0 hover:opacity-80 transition-opacity"
+            className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#EEEEEE] transition-all"
+            aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            <img
-              src={isCollapsed ? AfficheSidebar : MasquerSidebar}
-              alt="Toggle Sidebar"
-              className="w-12 h-12"
-            />
+            {isCollapsed ? (
+              // Circle arrow pointing right (expand)
+              <BsFillArrowLeftCircleFill size={24} />
+            ) : (
+              // Circle arrow pointing left (collapse)
+              <BsFillArrowRightCircleFill size={24} />
+
+            )}
           </button>
         </div>
       </div>
@@ -101,25 +104,24 @@ const Sidebar = ({ activeTab = 'my-tickets', onTabChange, onCollapseChange }: Si
               {/* Height: 44px, rounded corners for modern look */}
               <button
                 onClick={() => onTabChange?.(item.id)}
-                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-all relative ${
-                  activeTab === item.id
+                className={`w-full flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-3 py-2.5 rounded-lg transition-all relative ${activeTab === item.id
                     ? 'bg-[#FAFAFA] text-black'
                     : 'text-[#434343] hover:bg-white/50'
-                }`}
+                  }`}
               >
                 {/* Active indicator: orange vertical bar on the left */}
                 {/* Size: W:4px H:24px, positioned at left edge */}
                 {activeTab === item.id && (
                   <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-[#FF4000] rounded-r" />
                 )}
-                
+
                 {/* Icon: 20x20px, maintains original size when collapsed */}
                 <img
                   src={item.icon}
                   alt={item.label}
                   className="w-5 h-5 shrink-0"
                 />
-                
+
                 {/* Label text: only visible when expanded */}
                 {/* Font: 14px, medium weight for readability */}
                 {!isCollapsed && (

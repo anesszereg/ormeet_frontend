@@ -13,7 +13,8 @@ import OnboardingBrandInfo from './OnboardingBrandInfo';
 import OnboardingInterests from './OnboardingInterests';
 import DashboardAttendee from './dashboard/DashboardAttendee';
 import SearchResult from './SearchResult';
-import EventDetailsSearchResults from './EventDetailsSearchResults';
+import EventDetailsGlobal from './EventDetailsGlobal';
+import TicketList from './TicketList';
 
 const App = () => {
   return (
@@ -49,7 +50,8 @@ const App = () => {
         
         {/* Public Search Routes */}
         <Route path="/search-results" element={<SearchResult />} />
-        <Route path="/event/:eventId" element={<EventDetailsSearchResults />} />
+        <Route path="/event/:eventId" element={<EventDetailsGlobal />} />
+        <Route path="/event/:eventId/tickets" element={<TicketList />} />
         
         {/* TODO: Add other routes */}
         {/* <Route path="/events" element={<Events />} /> */}

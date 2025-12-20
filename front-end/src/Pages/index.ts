@@ -9,4 +9,4 @@ export { default as OnboardingBrandInfo } from './OnboardingBrandInfo';
 export { default as OnboardingInterests } from './OnboardingInterests';
 export { default as DashboardAttendee } from './dashboard/DashboardAttendee';
 export { default as SearchResult } from './SearchResult';
-export { default as EventDetailsSearchResults } from './EventDetailsSearchResults';
+export { default as EventDetailsGlobal } from './EventDetailsGlobal';

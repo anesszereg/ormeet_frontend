@@ -5,7 +5,11 @@ import Logo from '../assets/Svgs/navbar/Logo.svg';
 import LangueIcon from '../assets/Svgs/navbar/langue.svg';
 import ProfilePhoto from '../assets/imges/photoProfil.jpg';
 
-const Navbar = () => {
+interface NavbarProps {
+  onMenuToggle?: () => void;
+}
+
+const Navbar = ({ onMenuToggle }: NavbarProps) => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
@@ -44,31 +48,43 @@ const Navbar = () => {
     // Navbar container: full width, white background, shadow as per Figma (Y:4, Blur:8, #000000 8%)
     // Height: 64px for comfortable spacing, padding horizontal for content alignment
     // Bottom border for visual separation
-    <nav className="w-full h-16 bg-white px-8 flex items-center justify-between shadow-md border-b border-[#EEEEEE]" style={{ boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)' }}>
-      {/* Left section: Logo + Brand name */}
+    <nav className="w-full h-16 bg-white px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-md border-b border-light-gray" style={{ boxShadow: '0px 4px 8px 0px rgba(0, 0, 0, 0.08)' }}>
+      {/* Left section: Mobile menu button + Logo + Brand name */}
       <div className="flex items-center gap-2">
+        {/* Mobile menu button - only shown on mobile/tablet */}
+        {onMenuToggle && (
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden p-2 -ml-2 mr-1 rounded-lg hover:bg-secondary-light transition-colors"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+        )}
         {/* Logo: Slightly reduced size for Figma accuracy, vertically centered */}
         <img src={Logo} alt="Ormeet Logo" className="w-6 h-8" />
         {/* Brand text: 20px font size, bold weight, black color, vertically aligned with logo */}
         <span className="text-xl font-bold text-black leading-none">Ormeet</span>
       </div>
 
-      {/* Center section: Navigation links */}
-      <div className="flex items-center gap-8">
-        <a href="/browse-events" className="text-sm font-medium text-black hover:text-[#FF4000] transition-colors">
+      {/* Center section: Navigation links - Hidden on mobile */}
+      <div className="hidden md:flex items-center gap-4 lg:gap-8">
+        <a href="/browse-events" className="text-sm font-medium text-black hover:text-primary transition-colors">
           Browse events
         </a>
-        <a href="/host-events" className="text-sm font-medium text-black hover:text-[#FF4000] transition-colors">
+        <a href="/host-events" className="text-sm font-medium text-black hover:text-primary transition-colors">
           Host events
         </a>
-        <a href="/support" className="text-sm font-medium text-black hover:text-[#FF4000] transition-colors">
+        <a href="/support" className="text-sm font-medium text-black hover:text-primary transition-colors">
           Support
         </a>
       </div>
 
       {/* Right section: Language selector + Profile icon */}
       {/* Adjusted spacing for better visual alignment */}
-      <div className="flex items-center gap-3 mr-8">
+      <div className="flex items-center gap-2 sm:gap-3 mr-0 sm:mr-4 lg:mr-8">
         {/* Language selector with dropdown */}
         <div className="relative" ref={languageMenuRef}>
           {/* Language button: 36x36px circular background with icon */}

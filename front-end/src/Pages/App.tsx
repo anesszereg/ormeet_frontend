@@ -12,6 +12,7 @@ import EmailConfirmation from './EmailConfirmation';
 import OnboardingBrandInfo from './OnboardingBrandInfo';
 import OnboardingInterests from './OnboardingInterests';
 import DashboardAttendee from './dashboard/DashboardAttendee';
+import DashboardOrganizer from './dashboard/DashboardOrganizer';
 import SearchResult from './SearchResult';
 import EventDetailsGlobal from './EventDetailsGlobal';
 import TicketList from './TicketList';
@@ -41,11 +42,11 @@ const App = () => {
         {/* Protected Dashboard Routes */}
         <Route 
           path="/dashboard-attendee" 
-          element={
-            <ProtectedRoute>
-              <DashboardAttendee />
-            </ProtectedRoute>
-          } 
+          element={<DashboardAttendee />} 
+        />
+        <Route 
+          path="/dashboard-organizer" 
+          element={<DashboardOrganizer />} 
         />
         
         {/* Public Search Routes */}

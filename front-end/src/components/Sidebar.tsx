@@ -56,11 +56,10 @@ const Sidebar = ({ activeTab = 'my-tickets', onTabChange, onCollapseChange }: Si
           >
             {isCollapsed ? (
               // Circle arrow pointing right (expand)
-              <BsFillArrowLeftCircleFill size={24} />
+              <BsFillArrowRightCircleFill size={24} />
             ) : (
               // Circle arrow pointing left (collapse)
-              <BsFillArrowRightCircleFill size={24} />
-
+              <BsFillArrowLeftCircleFill size={24} />
             )}
           </button>
         </div>

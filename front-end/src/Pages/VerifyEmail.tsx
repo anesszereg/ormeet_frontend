@@ -28,7 +28,8 @@ const VerifyEmail = () => {
         setSuccess(true);
         refreshUser(); // Update user state in context
         setTimeout(() => {
-          navigate('/dashboard-attendee');
+          // Redirect to login after verification - user needs to login
+          navigate('/login');
         }, 3000);
       } catch (err: any) {
         const errorMessage = err.response?.data?.message || err.message || 'Email verification failed.';
@@ -77,7 +78,7 @@ const VerifyEmail = () => {
                 <circle cx="24" cy="24" r="24" fill="#34A853" opacity="0.1"/>
                 <path d="M16 24l6 6 10-12" stroke="#34A853" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              <p className="text-sm text-[#4F4F4F] leading-relaxed">Redirecting to your dashboard...</p>
+              <p className="text-sm text-[#4F4F4F] leading-relaxed">Redirecting to login...</p>
             </div>
           </div>
         </div>

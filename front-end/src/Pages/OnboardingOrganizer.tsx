@@ -18,13 +18,13 @@ const OnboardingOrganizer = () => {
   };
 
   const handleGoogleSignup = () => {
-    // TODO: Implement Google OAuth
-    console.log('Google signup clicked');
+    // Store user type before OAuth redirect
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   const handleFacebookSignup = () => {
-    // TODO: Implement Facebook OAuth
-    console.log('Facebook signup clicked');
+    // Store user type before OAuth redirect
+    window.location.href = 'http://localhost:3000/auth/facebook';
   };
 
   const handleLoginRedirect = () => {

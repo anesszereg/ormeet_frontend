@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import authService from '../services/authService';
 import Logo from '../assets/Svgs/Logo.svg';
 import LoginImage from '../assets/imges/login.jpg';
 
@@ -46,16 +47,26 @@ const Login = () => {
       
       await login(credentials);
       
-      // Navigate to dashboard after successful login
-      // Avoid redirecting back to onboarding or login pages
-      const isOnboardingOrAuth = from === '/' || 
-                                  from === '/login' || 
-                                  from === '/register' ||
-                                  from.startsWith('/onboarding');
+      // Check if user has pending onboarding
+      const userType = localStorage.getItem('userType');
+      const user = authService.getCurrentUser();
       
-      const redirectTo = !isOnboardingOrAuth ? from : '/dashboard-attendee';
+      if (userType && !localStorage.getItem('onboardingComplete')) {
+        // User just registered and needs to complete onboarding
+        if (userType === 'organize') {
+          navigate('/onboarding-brand-info', { replace: true });
+        } else {
+          navigate('/onboarding-interests', { replace: true });
+        }
+        return;
+      }
       
-      navigate(redirectTo, { replace: true });
+      // Navigate to dashboard based on user role
+      if (user?.roles?.includes('organizer')) {
+        navigate('/dashboard-organizer', { replace: true });
+      } else {
+        navigate('/dashboard-attendee', { replace: true });
+      }
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'Login failed. Please try again.';
       setError(errorMessage);
@@ -66,13 +77,13 @@ const Login = () => {
   };
 
   const handleGoogleLogin = () => {
-    // TODO: Implement Google OAuth
-    console.log('Google login clicked');
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   const handleFacebookLogin = () => {
-    // TODO: Implement Facebook OAuth
-    console.log('Facebook login clicked');
+    // Redirect to backend Facebook OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/facebook';
   };
 
   return (

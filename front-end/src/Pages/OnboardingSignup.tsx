@@ -15,6 +15,7 @@ const OnboardingSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleEmailSignup = () => {
     setSignupMethod('email');
@@ -25,13 +26,13 @@ const OnboardingSignup = () => {
   };
 
   const handleGoogleSignup = () => {
-    // TODO: Implement Google OAuth
-    console.log('Google signup clicked');
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   const handleFacebookSignup = () => {
-    // TODO: Implement Facebook OAuth
-    console.log('Facebook signup clicked');
+    // Redirect to backend Facebook OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/facebook';
   };
 
   const handleLoginRedirect = () => {
@@ -67,10 +68,8 @@ const OnboardingSignup = () => {
 
       await authService.register(registerData);
       
-      localStorage.setItem('pendingVerification', signupMethod === 'email' ? email : phone);
-      localStorage.setItem('verificationType', signupMethod);
-      
-      navigate('/email-confirmation');
+      // Show success popup - user needs to verify email via link sent to their inbox
+      setShowSuccess(true);
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'Registration failed. Please try again.';
       setError(errorMessage);
@@ -82,6 +81,31 @@ const OnboardingSignup = () => {
 
   return (
     <div className="flex flex-col md:flex-row h-screen w-full">
+      {/* Success Popup */}
+      {showSuccess && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 max-w-md w-full animate-fadeIn">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M10 16l4 4 8-8" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-black">Check your email!</h2>
+              <p className="text-[#4F4F4F] text-sm leading-relaxed">
+                We've sent a verification link to <strong>{signupMethod === 'email' ? email : phone}</strong>. Please check your inbox and click the link to verify your account before logging in.
+              </p>
+              <button
+                onClick={() => navigate('/login')}
+                className="w-full px-6 py-3.5 bg-[#FF4000] text-white text-base font-semibold rounded-lg hover:bg-[#E63900] transition-all shadow-sm hover:shadow-md mt-2"
+              >
+                Go to Login
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Left Side - Form */}
       <div className="flex-1 flex items-start justify-center p-4 sm:p-6 md:p-8 bg-white overflow-y-auto">
         <div className="w-full max-w-[460px] flex flex-col gap-4 sm:gap-6 py-6 sm:py-8 md:py-4">

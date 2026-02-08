@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import authService from '../services/authService';
 import Logo from '../assets/Svgs/Logo.svg';
 import LoginImage from '../assets/imges/login.jpg';
 
@@ -96,26 +95,16 @@ const OnboardingInterests = () => {
     setIsLoading(true);
 
     try {
-      const user = authService.getCurrentUser();
-      if (!user) {
-        setError('Please complete registration first');
-        navigate('/onboarding-signup');
-        return;
-      }
-
       const onboardingData = {
         interestedEventCategories: [selectedCategory, ...selectedSubtypes],
       };
 
       localStorage.setItem('onboardingData', JSON.stringify(onboardingData));
+      localStorage.setItem('onboardingComplete', 'true');
       localStorage.removeItem('userType');
 
-      navigate('/login', { 
-        state: { 
-          message: 'Registration complete! Please log in to continue.',
-          onboardingComplete: true 
-        } 
-      });
+      // Redirect to attendee dashboard
+      navigate('/dashboard-attendee', { replace: true });
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || 'Failed to save data. Please try again.';
       setError(errorMessage);

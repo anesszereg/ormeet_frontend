@@ -7,7 +7,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (data: LoginDto) => Promise<void>;
   loginWithCode: (data: LoginWithCodeDto) => Promise<void>;
-  register: (data: RegisterDto) => Promise<void>;
+  register: (data: RegisterDto) => Promise<{ user: User; token: string; message?: string }>;
   logout: () => void;
   refreshUser: () => void;
 }
@@ -39,17 +39,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (data: LoginDto) => {
     const response = await authService.login(data);
+    console.log('🔐 [Auth] Login successful');
+    console.log('🔐 [Auth] User data:', response.user);
+    console.log('🔐 [Auth] Token:', response.token ? '✅ Received' : '❌ Missing');
     setUser(response.user);
   };
 
   const loginWithCode = async (data: LoginWithCodeDto) => {
     const response = await authService.loginWithCode(data);
+    console.log('🔐 [Auth] Login with code successful');
+    console.log('🔐 [Auth] User data:', response.user);
     setUser(response.user);
   };
 
   const register = async (data: RegisterDto) => {
     const response = await authService.register(data);
-    setUser(response.user);
+    console.log('🔐 [Auth] Registration successful');
+    console.log('🔐 [Auth] User data:', response.user);
+    // Don't auto-login after registration - user must verify email first
+    // Clear any stored token/user to ensure they can't access protected routes
+    authService.logout();
+    return response;
   };
 
   const logout = () => {

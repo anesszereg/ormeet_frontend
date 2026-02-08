@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import authService from '../../services/authService';
+import organizerService from '../../services/organizerService';
+import { useAuth } from '../../context/AuthContext';
 import PersonalInfoIcon from '../../assets/Svgs/organiser/dashboard/Account settings/personalInfo.svg';
 import OrganizationIcon from '../../assets/Svgs/organiser/dashboard/Account settings/organization.svg';
 import TeamRolesIcon from '../../assets/Svgs/organiser/dashboard/Account settings/teamRoles.svg';
@@ -37,7 +40,9 @@ interface Role {
 }
 
 const AccountSettingsOrganizer = () => {
+  const { user, refreshUser } = useAuth();
   const [activeSection, setActiveSection] = useState('personal-info');
+  const [isLoading, setIsLoading] = useState(false);
   
   // Modal states
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -85,28 +90,28 @@ const AccountSettingsOrganizer = () => {
   const [locationError, setLocationError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   
-  // Form states for Personal Info
+  // Form states for Personal Info - initialized from user context
   const [profileData, setProfileData] = useState({
-    fullName: 'Lina Bensalem',
-    profilePhoto: ProfilePhoto
+    fullName: user?.name || '',
+    profilePhoto: user?.avatarUrl || ProfilePhoto
   });
   
   const [emailData, setEmailData] = useState({
-    currentEmail: 'sophia.reed@gmail.com',
+    currentEmail: user?.email || '',
     newEmail: '',
     password: ''
   });
   
   const [phoneData, setPhoneData] = useState({
-    currentPhone: '(775) 586-5206',
+    currentPhone: user?.phone || '',
     newPhone: '',
     password: ''
   });
   
   const [locationData, setLocationData] = useState({
-    country: 'Algeria',
-    city: 'Oran',
-    address: ''
+    country: user?.metadata?.location?.country || '',
+    city: user?.metadata?.location?.city || '',
+    address: user?.metadata?.location?.address || ''
   });
   
   // Email Preferences states
@@ -370,20 +375,30 @@ const AccountSettingsOrganizer = () => {
   }, []);
   
   // Handlers for Personal Info
-  const handleProfileSave = () => {
+  const handleProfileSave = async () => {
     if (!profileData.fullName.trim()) {
       setProfileError('Full name is required');
       return;
     }
     setProfileError('');
-    setShowProfileSuccess(true);
-    setTimeout(() => {
-      setShowProfileSuccess(false);
-      setIsProfileModalOpen(false);
-    }, 2000);
+    setIsLoading(true);
+    
+    try {
+      await authService.updateProfile({ name: profileData.fullName });
+      refreshUser();
+      setShowProfileSuccess(true);
+      setTimeout(() => {
+        setShowProfileSuccess(false);
+        setIsProfileModalOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setProfileError(err.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  const handleEmailSave = () => {
+  const handleEmailSave = async () => {
     if (!emailData.newEmail.trim()) {
       setEmailError('New email is required');
       return;
@@ -398,15 +413,25 @@ const AccountSettingsOrganizer = () => {
       return;
     }
     setEmailError('');
-    setShowEmailSuccess(true);
-    setTimeout(() => {
-      setShowEmailSuccess(false);
-      setEmailData({ ...emailData, currentEmail: emailData.newEmail, newEmail: '', password: '' });
-      setIsEmailModalOpen(false);
-    }, 2000);
+    setIsLoading(true);
+    
+    try {
+      await authService.updateEmail({ newEmail: emailData.newEmail, password: emailData.password });
+      refreshUser();
+      setShowEmailSuccess(true);
+      setTimeout(() => {
+        setShowEmailSuccess(false);
+        setEmailData({ ...emailData, currentEmail: emailData.newEmail, newEmail: '', password: '' });
+        setIsEmailModalOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setEmailError(err.response?.data?.message || 'Failed to update email');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  const handlePhoneSave = () => {
+  const handlePhoneSave = async () => {
     if (!phoneData.newPhone.trim()) {
       setPhoneError('New phone number is required');
       return;
@@ -416,15 +441,25 @@ const AccountSettingsOrganizer = () => {
       return;
     }
     setPhoneError('');
-    setShowPhoneSuccess(true);
-    setTimeout(() => {
-      setShowPhoneSuccess(false);
-      setPhoneData({ ...phoneData, currentPhone: phoneData.newPhone, newPhone: '', password: '' });
-      setIsPhoneModalOpen(false);
-    }, 2000);
+    setIsLoading(true);
+    
+    try {
+      await authService.updatePhone({ newPhone: phoneData.newPhone, password: phoneData.password });
+      refreshUser();
+      setShowPhoneSuccess(true);
+      setTimeout(() => {
+        setShowPhoneSuccess(false);
+        setPhoneData({ ...phoneData, currentPhone: phoneData.newPhone, newPhone: '', password: '' });
+        setIsPhoneModalOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setPhoneError(err.response?.data?.message || 'Failed to update phone');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
-  const handleLocationSave = () => {
+  const handleLocationSave = async () => {
     if (!locationData.country.trim()) {
       setLocationError('Country is required');
       return;
@@ -434,11 +469,25 @@ const AccountSettingsOrganizer = () => {
       return;
     }
     setLocationError('');
-    setShowLocationSuccess(true);
-    setTimeout(() => {
-      setShowLocationSuccess(false);
-      setIsLocationModalOpen(false);
-    }, 2000);
+    setIsLoading(true);
+    
+    try {
+      await authService.updateLocation({
+        country: locationData.country,
+        city: locationData.city,
+        address: locationData.address
+      });
+      refreshUser();
+      setShowLocationSuccess(true);
+      setTimeout(() => {
+        setShowLocationSuccess(false);
+        setIsLocationModalOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setLocationError(err.response?.data?.message || 'Failed to update location');
+    } finally {
+      setIsLoading(false);
+    }
   };
   
   // Handlers for About Organization
@@ -589,7 +638,7 @@ const AccountSettingsOrganizer = () => {
   };
   
   // Handlers for Login & Security
-  const handlePasswordSave = () => {
+  const handlePasswordSave = async () => {
     if (!passwordData.currentPassword.trim()) {
       setPasswordError('Current password is required');
       return;
@@ -607,12 +656,24 @@ const AccountSettingsOrganizer = () => {
       return;
     }
     setPasswordError('');
-    setShowPasswordSuccess(true);
-    setTimeout(() => {
-      setShowPasswordSuccess(false);
-      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setIsEditPasswordOpen(false);
-    }, 2000);
+    setIsLoading(true);
+    
+    try {
+      await authService.changePassword({
+        currentPassword: passwordData.currentPassword,
+        newPassword: passwordData.newPassword
+      });
+      setShowPasswordSuccess(true);
+      setTimeout(() => {
+        setShowPasswordSuccess(false);
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        setIsEditPasswordOpen(false);
+      }, 2000);
+    } catch (err: any) {
+      setPasswordError(err.response?.data?.message || 'Failed to change password');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const menuItems = [

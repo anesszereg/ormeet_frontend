@@ -76,11 +76,13 @@ const Register = () => {
   };
 
   const handleGoogleSignup = () => {
-    console.log('Google signup clicked');
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/google';
   };
 
   const handleFacebookSignup = () => {
-    console.log('Facebook signup clicked');
+    // Redirect to backend Facebook OAuth endpoint
+    window.location.href = 'http://localhost:3000/auth/facebook';
   };
 
   return (
@@ -95,9 +97,9 @@ const Register = () => {
                   <path d="M10 16l4 4 8-8" stroke="#22C55E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-black">Account created successfully!</h2>
+              <h2 className="text-2xl font-bold text-black">Check your email!</h2>
               <p className="text-[#4F4F4F] text-sm leading-relaxed">
-                Welcome to Ormeet! Your account has been created and you can now start discovering amazing events, connecting with organizers, and making unforgettable memories.
+                We've sent a verification link to <strong>{formData.email}</strong>. Please check your inbox and click the link to verify your email before logging in.
               </p>
               <button
                 onClick={() => navigate('/login')}

@@ -13,6 +13,7 @@ import { OrdersModule } from './orders/orders.module';
 import { TicketsModule } from './tickets/tickets.module';
 import { PromotionsModule } from './promotions/promotions.module';
 import { AttendanceModule } from './attendance/attendance.module';
+import { UsersModule } from './users/users.module';
 import {
   User,
   Organization,
@@ -74,6 +75,7 @@ import {
     TicketsModule,
     PromotionsModule,
     AttendanceModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -12,7 +12,8 @@ export class EmailService {
   ) {}
 
   async sendWelcomeEmail(email: string, name: string, verificationToken: string) {
-    const verificationUrl = `${this.configService.get('APP_URL')}/auth/verify-email?token=${verificationToken}`;
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+    const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
     try {
       this.logger.log(`📧 Sending welcome email to: ${email}`);
@@ -36,7 +37,8 @@ export class EmailService {
   }
 
   async sendEmailVerification(email: string, name: string, verificationToken: string) {
-    const verificationUrl = `${this.configService.get('APP_URL')}/auth/verify-email?token=${verificationToken}`;
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+    const verificationUrl = `${frontendUrl}/verify-email?token=${verificationToken}`;
 
     try {
       this.logger.log(`📧 Sending verification email to: ${email}`);
@@ -60,7 +62,8 @@ export class EmailService {
   }
 
   async sendPasswordResetEmail(email: string, name: string, resetToken: string) {
-    const resetUrl = `${this.configService.get('APP_URL')}/auth/reset-password?token=${resetToken}`;
+    const frontendUrl = this.configService.get('FRONTEND_URL') || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
     try {
       this.logger.log(`📧 Sending password reset email to: ${email}`);

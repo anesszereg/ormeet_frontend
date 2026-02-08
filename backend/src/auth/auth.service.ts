@@ -110,6 +110,11 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    // Check if email is verified
+    if (!user.emailVerified) {
+      throw new UnauthorizedException('Please verify your email before logging in. Check your inbox for the verification link.');
+    }
+
     // Send login notification email (only if email exists)
     if (user.email) {
       try {
@@ -468,6 +473,60 @@ export class AuthService {
       } catch (error) {
         console.error('⚠️ Failed to send login notification email:', error.message);
       }
+    }
+
+    // Generate JWT token
+    const token = this.generateToken(user);
+
+    return {
+      user: this.sanitizeUser(user),
+      token,
+    };
+  }
+
+  async validateOAuthUser(oauthUser: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    picture?: string;
+    provider: 'google' | 'facebook';
+  }) {
+    const { email, firstName, lastName, picture, provider } = oauthUser;
+
+    if (!email) {
+      throw new BadRequestException('Email is required from OAuth provider');
+    }
+
+    // Check if user already exists
+    let user = await this.userRepository.findOne({
+      where: { email },
+    });
+
+    if (user) {
+      // User exists - update their avatar if provided and not set
+      if (picture && !user.avatarUrl) {
+        user.avatarUrl = picture;
+        await this.userRepository.save(user);
+      }
+      
+      // Mark email as verified since OAuth providers verify emails
+      if (!user.emailVerified) {
+        user.emailVerified = true;
+        await this.userRepository.save(user);
+      }
+    } else {
+      // Create new user from OAuth data (no password required for OAuth users)
+      user = this.userRepository.create({
+        name: `${firstName} ${lastName}`.trim(),
+        email,
+        passwordHash: '', // OAuth users don't have a password
+        emailVerified: true, // OAuth providers verify emails
+        roles: [UserRole.ATTENDEE],
+        avatarUrl: picture,
+        oauthProvider: provider,
+      });
+
+      await this.userRepository.save(user);
     }
 
     // Generate JWT token

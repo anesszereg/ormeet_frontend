@@ -65,6 +65,9 @@ import {
             synchronize: !isProduction,
             logging: !isProduction,
             ssl: isProduction ? { rejectUnauthorized: false } : false,
+            extra: {
+              family: 4,
+            },
           };
         }
         
